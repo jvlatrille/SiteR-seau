@@ -1,0 +1,89 @@
+/* Style de base */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Conteneur principal */
+h1 {
+    margin-top: 20px;
+    color: #5c6bc0;
+}
+
+h2 {
+    color: #3f51b5;
+}
+
+/* Formulaires */
+form {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+label {
+    font-weight: bold;
+    color: #333;
+}
+
+select, button {
+    padding: 8px 12px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    width: 200px;
+}
+
+select {
+    cursor: pointer;
+}
+
+button {
+    background-color: #5c6bc0;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #3f51b5;
+}
+
+/* Liste des musiques */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background-color: #e3f2fd;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+li strong {
+    color: #3f51b5;
+}
+
+li a {
+    text-decoration: none;
+    color: #5c6bc0;
+    font-weight: bold;
+}
+
+li a:hover {
+    color: #3f51b5;
+}
