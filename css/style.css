@@ -87,3 +87,64 @@ li a {
 li a:hover {
     color: #3f51b5;
 }
+
+/* Style de la table des playlists */
+.playlist-table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: #f4f4f9;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.playlist-table thead {
+    background-color: #5c6bc0;
+    color: #fff;
+}
+
+.playlist-table th, .playlist-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.playlist-table th {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.playlist-table tbody tr:nth-child(even) {
+    background-color: #e3f2fd;
+}
+
+.playlist-table tbody tr:hover {
+    background-color: #d1e3f8;
+}
+
+.playlist-table a {
+    color: #5c6bc0;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.playlist-table a:hover {
+    color: #3f51b5;
+}
+
+.playlist-table td:nth-child(1) {
+    width: 5%;
+}
+
+.playlist-table td:nth-child(2) {
+    width: 50%;
+}
+
+.playlist-table td:nth-child(3) {
+    width: 30%;
+}
+
+.playlist-table td:nth-child(4) {
+    width: 15%;
+    text-align: center;
+}

@@ -1,4 +1,10 @@
--- Table Utilisateur
+-- Suppression des tables existantes pour éviter les conflits
+DROP TABLE IF EXISTS Contenir;
+DROP TABLE IF EXISTS Musique;
+DROP TABLE IF EXISTS Playlist;
+DROP TABLE IF EXISTS Utilisateur;
+
+-- Création de la table Utilisateur
 CREATE TABLE IF NOT EXISTS Utilisateur (
    idUtilisateur VARCHAR(50),
    nom VARCHAR(50),
@@ -6,7 +12,7 @@ CREATE TABLE IF NOT EXISTS Utilisateur (
    PRIMARY KEY(idUtilisateur)
 );
 
--- Table Playlist
+-- Création de la table Playlist
 CREATE TABLE IF NOT EXISTS Playlist (
    idPlaylist VARCHAR(50),
    titre VARCHAR(50),
@@ -16,7 +22,7 @@ CREATE TABLE IF NOT EXISTS Playlist (
    FOREIGN KEY(idUtilisateur) REFERENCES Utilisateur(idUtilisateur)
 );
 
--- Table Musique
+-- Création de la table Musique
 CREATE TABLE IF NOT EXISTS Musique (
    idMusique VARCHAR(50),
    titre VARCHAR(50),
@@ -25,7 +31,7 @@ CREATE TABLE IF NOT EXISTS Musique (
    PRIMARY KEY(idMusique)
 );
 
--- Table Contenir (relation entre Playlist et Musique)
+-- Création de la table Contenir (relation entre Playlist et Musique)
 CREATE TABLE IF NOT EXISTS Contenir (
    idPlaylist VARCHAR(50),
    idMusique VARCHAR(50),
@@ -34,27 +40,81 @@ CREATE TABLE IF NOT EXISTS Contenir (
    FOREIGN KEY(idMusique) REFERENCES Musique(idMusique)
 );
 
--- Insertion de données d'exemple dans la table Utilisateur
+-- Insertion des données utilisateur 
 INSERT INTO Utilisateur (idUtilisateur, nom, email) VALUES
-('U1', 'Alice', 'alice@example.com'),
-('U2', 'Bob', 'bob@example.com'),
-('U3', 'Charlie', 'charlie@example.com');
+('U4', 'Jules', 'jvlatrille@iutbayonne.univ-pau.fr'),
+('U5', 'Thibault', 'tchipy@iutbayonne.univ-pau.fr'),
+('U6', 'Nathan', 'namrein@iutbayonne.univ-pau.fr');
 
--- Insertion de données d'exemple dans la table Playlist
+-- Insertion des playlists
 INSERT INTO Playlist (idPlaylist, titre, dateCreation, idUtilisateur) VALUES
-('P1', 'Rock Classics', '2024-01-15', 'U1'),
-('P2', 'Chill Vibes', '2024-02-20', 'U2'),
-('P3', 'Workout Hits', '2024-03-10', 'U3');
+-- Jules
+('P4', 'Coup de Coeurs', '2024-11-01', 'U4'),
+('P5', 'Drive', '2024-11-02', 'U4'),
+-- Thibault
+('P6', 'Coup de Coeur', '2024-11-10', 'U5'),
+('P7', 'Nom Playlist', '2024-11-10', 'U5'),
+-- Nathan
+('P8', 'Coup de Coeur', '2024-11-10', 'U6'),
+('P9', 'Nom Playlist', '2024-11-10', 'U6');
 
--- Insertion de données d'exemple dans la table Musique
+
+-- Insertion des musiques dans la table Musique
 INSERT INTO Musique (idMusique, titre, artiste, lien) VALUES
-('M1', 'Bohemian Rhapsody', 'Queen', 'https://example.com/bohemian_rhapsody'),
-('M2', 'Shape of You', 'Ed Sheeran', 'https://example.com/shape_of_you'),
-('M3', 'Eye of the Tiger', 'Survivor', 'https://example.com/eye_of_the_tiger');
+-- Playlist Coup de Coeurs de Jules
+('M10', 'ОТДАЙ', 'MIFEST, Leytink', 'https://youtu.be/0g206u5Iaf8?si=qc28qpKlSNndoCt6'),
+('M11', 'untouched', 'Jerry Diane', 'https://open.spotify.com/intl-fr/track/0gCktbMM6YJ9EHa06Y6Uh8?si=91ddbd58a0524ed0'),
+('M12', 'Magic Melody', 'ALTRAX', 'https://youtu.be/JFLLc7g_Yk8?si=3nxbAx8tmsWoBwkz'),
+('M13', 'SLAVA FUNK!', 'MVSTERIOUS, Hxmr, yngastrobeatz', 'https://youtu.be/w_VQJBWvJcI?si=3CNMMgTS6QvxpDGK'),
+('M14', 'All the Things She Said - Noiseflow Remix', 'DJ Gollum, Noiseflow, Triple X, Scarlet', 'https://youtu.be/jit-8fZGJNg?si=8DYyHbFHRNF2BJe9'),
+('M15', 'Shut Up and Dance', 'WALK THE MOON', 'https://youtu.be/6JCLY0Rlx6Q?si=uQaJmAg-Eo1OJJ2T'),
+('M16', '300', 'lagoyo', 'https://youtu.be/VGwtXoeo7II?si=8Rc_WFPanopCrhNt'),
+-- Playlist Drive de Jules
+('M24', 'Tsunami', 'DVBBS, Borgeous', 'https://youtu.be/0EWbonj7f18?si=ortFk3qefriSXvpr'),
+('M25', 'Happy Pills', 'Weathers', 'https://youtu.be/mFxq7Mb96b0?si=TAOHOfL-8DNpQBmA'),
+('M26', 'Monster', 'Luxxious', 'https://youtu.be/gX2rR9gy-mM?si=OoikgK5uGM2QHSPK'),
+('M27', 'Saxobeat', 'Bread Beatz, Newmagick', 'https://youtu.be/yMSvhsd8NzI?si=vSQOfpmCXyii6V22'),
+('M28', 'Controlla - Lieless Remix', 'Yarimov, Lieless', 'https://youtu.be/Jrterm8Yx9s?si=-HeKrVoIotKG8Wkr'),
+('M29', 'BANGARANG', 'KILLEDDY', 'https://youtu.be/KK5wKJEs5x0?si=kTwKxgoNigxPoV5m'),
+('M30', 'FIGHT!', 'xxephyrr, TWISTED', 'https://youtu.be/LUWmJ_6QsWs?si=s7KijgGO56w-dKdq'),
+-- Musiques par défaut
+('M31', 'Titre1', 'Artiste1', 'https://example.com/titre1'),
+('M32', 'Titre2', 'Artiste2', 'https://example.com/titre2'),
+('M33', 'Titre3', 'Artiste3', 'https://example.com/titre3');
 
--- Insertion de données d'exemple dans la table Contenir
+
+
+-- Liaison des musiques
 INSERT INTO Contenir (idPlaylist, idMusique) VALUES
-('P1', 'M1'), -- Rock Classics contient Bohemian Rhapsody
-('P2', 'M2'), -- Chill Vibes contient Shape of You
-('P3', 'M3'), -- Workout Hits contient Eye of the Tiger
-('P1', 'M3'); -- Rock Classics contient aussi Eye of the Tiger
+-- Liens entre les musiques Coups de Coeurs Jules et la playlist
+('P4', 'M10'),
+('P4', 'M11'),
+('P4', 'M12'),
+('P4', 'M13'),
+('P4', 'M14'),
+('P4', 'M15'),
+('P4', 'M16'),
+-- Liens entre les musiques Drive Jules et la playlist
+('P5', 'M24'),
+('P5', 'M25'),
+('P5', 'M26'),
+('P5', 'M27'),
+('P5', 'M28'),
+('P5', 'M29'),
+('P5', 'M30'),
+-- Musiques pour la playlist "Coup de Coeur" de Thibault
+('P6', 'M31'),
+('P6', 'M32'),
+('P6', 'M33'),
+-- Musiques pour la playlist "Nom Playlist" de Thibault
+('P7', 'M31'),
+('P7', 'M32'),
+('P7', 'M33'),
+-- Musiques pour la playlist "Coup de Coeur" de Nathan
+('P8', 'M31'),
+('P8', 'M32'),
+('P8', 'M33'),
+-- Musiques pour la playlist "Nom Playlist" de Nathan
+('P9', 'M31'),
+('P9', 'M32'),
+('P9', 'M33');

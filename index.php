@@ -42,7 +42,7 @@ if (isset($_POST['idPlaylist'])) {
 <body>
     <h1>Voir la Playlist d'un Utilisateur</h1>
 
-    <!-- Formulaire de sélection de l'utilisateur -->
+    <!-- Sélection de l'utilisateur -->
     <form method="POST" action="index.php">
         <label for="idUtilisateur">Sélectionnez un utilisateur :</label>
         <select name="idUtilisateur" id="idUtilisateur" onchange="this.form.submit()">
@@ -55,6 +55,7 @@ if (isset($_POST['idPlaylist'])) {
         </select>
     </form>
 
+    <!-- Selection de la playlist -->
     <?php if (!empty($playlists)): ?>
         <h2>Playlists de <?= htmlspecialchars($utilisateurs[array_search($idUtilisateur, array_column($utilisateurs, 'idUtilisateur'))]['nom']) ?></h2>
         <form method="POST" action="index.php">
@@ -71,17 +72,31 @@ if (isset($_POST['idPlaylist'])) {
         </form>
     <?php endif; ?>
 
+    <!-- Tableau avec la liste des playlists -->
     <?php if (!empty($musiques)): ?>
         <h2>Musiques dans la Playlist</h2>
-        <ul>
-            <?php foreach ($musiques as $musique): ?>
-                <li>
-                    <strong><?= htmlspecialchars($musique['titre']) ?></strong> - <?= htmlspecialchars($musique['artiste']) ?>
-                    <a href="<?= htmlspecialchars($musique['lien']) ?>" target="_blank">Écouter</a>
-                </li>
-            <?php endforeach; ?>
-        </ul>
+        <table class="playlist-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Titre</th>
+                    <th>Artiste</th>
+                    <th>Écouter</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($musiques as $index => $musique): ?>
+                    <tr>
+                        <td><?= $index + 1 ?></td>
+                        <td><strong><?= htmlspecialchars($musique['titre']) ?></strong></td>
+                        <td><?= htmlspecialchars($musique['artiste']) ?></td>
+                        <td><a href="<?= htmlspecialchars($musique['lien']) ?>" target="_blank">Écouter</a></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
     <?php endif; ?>
+
 </body>
 
 </html>
