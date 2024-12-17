@@ -1,102 +1,61 @@
 <?php
-// Inclure la configuration pour se connecter à la base
+// Inclure la configuration
 include 'config.php';
 
-// Récupérer tous les utilisateurs pour les afficher dans la liste déroulante
-$requete_utilisateurs = $bdd->query("SELECT idUtilisateur, nom FROM Utilisateur");
-$utilisateurs = $requete_utilisateurs->fetchAll(PDO::FETCH_ASSOC);
+// Fonction pour exécuter dialog et récupérer une option
+function afficherMenuDialog($titre, $options) {
+    $menu = "";
+    foreach ($options as $index => $option) {
+        $menu .= "$index \"{$option}\"\n";
+    }
 
-// Si un utilisateur est sélectionné, récupérer sa playlist
-$playlists = [];
-if (isset($_POST['idUtilisateur'])) {
-    $idUtilisateur = $_POST['idUtilisateur'];
-    $requete_playlists = $bdd->prepare("SELECT * FROM Playlist WHERE idUtilisateur = ?");
-    $requete_playlists->execute([$idUtilisateur]);
-    $playlists = $requete_playlists->fetchAll(PDO::FETCH_ASSOC);
+    // Crée la commande dialog
+    $commande = "dialog --clear --menu \"$titre\" 15 50 10 $menu 2>&1 >/dev/tty";
+    exec($commande, $choix);
+
+    return $choix ? (int)$choix : null;
 }
 
-// Si une playlist est sélectionnée, récupérer les musiques associées
-$musiques = [];
-if (isset($_POST['idPlaylist'])) {
-    $idPlaylist = $_POST['idPlaylist'];
-    $requete_musiques = $bdd->prepare("
-        SELECT Musique.titre, Musique.artiste, Musique.lien 
-        FROM Musique
-        INNER JOIN Contenir ON Musique.idMusique = Contenir.idMusique
-        WHERE Contenir.idPlaylist = ?
-    ");
-    $requete_musiques->execute([$idPlaylist]);
-    $musiques = $requete_musiques->fetchAll(PDO::FETCH_ASSOC);
+// Étape 1 : Sélectionner un utilisateur
+$requete_utilisateurs = $bdd->query("SELECT idUtilisateur, nom FROM Utilisateur");
+$utilisateurs = $requete_utilisateurs->fetchAll(PDO::FETCH_KEY_PAIR);
+
+$idUtilisateur = afficherMenuDialog("Sélectionnez un utilisateur", $utilisateurs);
+
+if (!$idUtilisateur) {
+    echo "Aucun utilisateur sélectionné.\n";
+    exit;
+}
+
+// Étape 2 : Sélectionner une playlist
+$requete_playlists = $bdd->prepare("SELECT idPlaylist, titre FROM Playlist WHERE idUtilisateur = ?");
+$requete_playlists->execute([$idUtilisateur]);
+$playlists = $requete_playlists->fetchAll(PDO::FETCH_KEY_PAIR);
+
+if (empty($playlists)) {
+    echo "Cet utilisateur n'a aucune playlist.\n";
+    exit;
+}
+
+$idPlaylist = afficherMenuDialog("Sélectionnez une playlist", $playlists);
+
+if (!$idPlaylist) {
+    echo "Aucune playlist sélectionnée.\n";
+    exit;
+}
+
+// Étape 3 : Afficher les musiques
+$requete_musiques = $bdd->prepare("
+    SELECT Musique.titre, Musique.artiste, Musique.lien
+    FROM Musique
+    INNER JOIN Contenir ON Musique.idMusique = Contenir.idMusique
+    WHERE Contenir.idPlaylist = ?
+");
+$requete_musiques->execute([$idPlaylist]);
+$musiques = $requete_musiques->fetchAll(PDO::FETCH_ASSOC);
+
+echo "### Musiques dans la Playlist ###\n";
+foreach ($musiques as $index => $musique) {
+    echo ($index + 1) . ". Titre : {$musique['titre']} | Artiste : {$musique['artiste']} | Lien : {$musique['lien']}\n";
 }
 ?>
-
-<!DOCTYPE html>
-<html lang="fr">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Playlist Utilisateur</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-
-<body>
-    <h1>Voir la Playlist d'un Utilisateur</h1>
-
-    <!-- Sélection de l'utilisateur -->
-    <form method="POST" action="index.php">
-        <label for="idUtilisateur">Sélectionnez un utilisateur :</label>
-        <select name="idUtilisateur" id="idUtilisateur" onchange="this.form.submit()">
-            <option value="">Choisir...</option>
-            <?php foreach ($utilisateurs as $utilisateur): ?>
-                <option value="<?= $utilisateur['idUtilisateur'] ?>" <?= isset($idUtilisateur) && $idUtilisateur == $utilisateur['idUtilisateur'] ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($utilisateur['nom']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </form>
-
-    <!-- Selection de la playlist -->
-    <?php if (!empty($playlists)): ?>
-        <h2>Playlists de <?= htmlspecialchars($utilisateurs[array_search($idUtilisateur, array_column($utilisateurs, 'idUtilisateur'))]['nom']) ?></h2>
-        <form method="POST" action="index.php">
-            <input type="hidden" name="idUtilisateur" value="<?= $idUtilisateur ?>">
-            <label for="idPlaylist">Sélectionnez une playlist :</label>
-            <select name="idPlaylist" id="idPlaylist" onchange="this.form.submit()">
-                <option value="">Choisir...</option>
-                <?php foreach ($playlists as $playlist): ?>
-                    <option value="<?= $playlist['idPlaylist'] ?>" <?= isset($idPlaylist) && $idPlaylist == $playlist['idPlaylist'] ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($playlist['titre']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </form>
-    <?php endif; ?>
-
-    <!-- Tableau avec la liste des playlists -->
-    <?php if (!empty($musiques)): ?>
-        <h2>Musiques dans la Playlist</h2>
-        <table class="playlist-table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Titre</th>
-                    <th>Artiste</th>
-                    <th>Écouter</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($musiques as $index => $musique): ?>
-                    <tr>
-                        <td><?= $index + 1 ?></td>
-                        <td><strong><?= htmlspecialchars($musique['titre']) ?></strong></td>
-                        <td><?= htmlspecialchars($musique['artiste']) ?></td>
-                        <td><a href="<?= htmlspecialchars($musique['lien']) ?>" target="_blank">Écouter</a></td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    <?php endif; ?>
-
-</body>
-
-</html>
