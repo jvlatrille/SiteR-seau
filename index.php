@@ -1,101 +1,47 @@
-<?php
-// Inclure la configuration pour se connecter à la base
-include 'config.php';
-
-// Récupérer tous les utilisateurs pour les afficher dans la liste déroulante
-$requete_utilisateurs = $bdd->query("SELECT idUtilisateur, nom FROM Utilisateur");
-$utilisateurs = $requete_utilisateurs->fetchAll(PDO::FETCH_ASSOC);
-
-// Si un utilisateur est sélectionné, récupérer sa playlist
-$playlists = [];
-if (isset($_POST['idUtilisateur'])) {
-    $idUtilisateur = $_POST['idUtilisateur'];
-    $requete_playlists = $bdd->prepare("SELECT * FROM Playlist WHERE idUtilisateur = ?");
-    $requete_playlists->execute([$idUtilisateur]);
-    $playlists = $requete_playlists->fetchAll(PDO::FETCH_ASSOC);
-}
-
-// Si une playlist est sélectionnée, récupérer les musiques associées
-$musiques = [];
-if (isset($_POST['idPlaylist'])) {
-    $idPlaylist = $_POST['idPlaylist'];
-    $requete_musiques = $bdd->prepare("
-        SELECT Musique.titre, Musique.artiste, Musique.lien 
-        FROM Musique
-        INNER JOIN Contenir ON Musique.idMusique = Contenir.idMusique
-        WHERE Contenir.idPlaylist = ?
-    ");
-    $requete_musiques->execute([$idPlaylist]);
-    $musiques = $requete_musiques->fetchAll(PDO::FETCH_ASSOC);
-}
-?>
-
 <!DOCTYPE html>
 <html lang="fr">
 
 <head>
     <meta charset="UTF-8">
-    <title>Playlist Utilisateur</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Utilisateurs</title>
 </head>
 
 <body>
-    <h1>Voir la Playlist d'un Utilisateur</h1>
 
-    <!-- Sélection de l'utilisateur -->
-    <form method="POST" action="index.php">
-        <label for="idUtilisateur">Sélectionnez un utilisateur :</label>
-        <select name="idUtilisateur" id="idUtilisateur" onchange="this.form.submit()">
-            <option value="">Choisir...</option>
-            <?php foreach ($utilisateurs as $utilisateur): ?>
-                <option value="<?= $utilisateur['idUtilisateur'] ?>" <?= isset($idUtilisateur) && $idUtilisateur == $utilisateur['idUtilisateur'] ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($utilisateur['nom']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </form>
+    <?php
+    include 'config.php';
+    try {
+        // Requête SQL pour récupérer les utilisateurs et le nombre de playlists
+        $users = $bdd->query('
+            SELECT U.idUtilisateur, U.nom, U.email, COUNT(P.idPlaylist) AS nbPlaylists
+            FROM Utilisateur U
+            LEFT JOIN Playlist P ON U.idUtilisateur = P.idUtilisateur
+            GROUP BY U.idUtilisateur
+        ')->fetchAll(PDO::FETCH_ASSOC);
 
-    <!-- Selection de la playlist -->
-    <?php if (!empty($playlists)): ?>
-        <h2>Playlists de <?= htmlspecialchars($utilisateurs[array_search($idUtilisateur, array_column($utilisateurs, 'idUtilisateur'))]['nom']) ?></h2>
-        <form method="POST" action="index.php">
-            <input type="hidden" name="idUtilisateur" value="<?= $idUtilisateur ?>">
-            <label for="idPlaylist">Sélectionnez une playlist :</label>
-            <select name="idPlaylist" id="idPlaylist" onchange="this.form.submit()">
-                <option value="">Choisir...</option>
-                <?php foreach ($playlists as $playlist): ?>
-                    <option value="<?= $playlist['idPlaylist'] ?>" <?= isset($idPlaylist) && $idPlaylist == $playlist['idPlaylist'] ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($playlist['titre']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </form>
-    <?php endif; ?>
+        // Affichage des utilisateurs
+        echo '<h1>Utilisateurs</h1>';
 
-    <!-- Tableau avec la liste des playlists -->
-    <?php if (!empty($musiques)): ?>
-        <h2>Musiques dans la Playlist</h2>
-        <table class="playlist-table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Titre</th>
-                    <th>Artiste</th>
-                    <th>Écouter</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($musiques as $index => $musique): ?>
-                    <tr>
-                        <td><?= $index + 1 ?></td>
-                        <td><strong><?= htmlspecialchars($musique['titre']) ?></strong></td>
-                        <td><?= htmlspecialchars($musique['artiste']) ?></td>
-                        <td><a href="<?= htmlspecialchars($musique['lien']) ?>" target="_blank">Écouter</a></td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    <?php endif; ?>
+        echo '<ul>';
+        echo '<li><strong>Id - Nom - Email - Nb de Playlists</strong></li>';
+        foreach ($users as $user) {
+            echo '<li>';
+            echo '<form action="playlists.php" method="post">';
+            echo '<input type="hidden" name="id" value="' . htmlspecialchars($user['idUtilisateur']) . '">';
+            echo '<button type="submit">'
+                . htmlspecialchars($user['idUtilisateur']) . " - "
+                . htmlspecialchars($user['nom']) . " - "
+                . htmlspecialchars($user['email']) . " - "
+                . htmlspecialchars($user['nbPlaylists']) .
+                '</button>';
+            echo '</form>';
+            echo '</li>';
+        }
+        echo '</ul>';
+    } catch (PDOException $e) {
+        echo '<p>Erreur : ' . htmlspecialchars($e->getMessage()) . '</p>';
+    }
+    ?>
 
 </body>
 
