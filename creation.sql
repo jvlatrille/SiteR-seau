@@ -53,10 +53,10 @@ INSERT INTO Playlist (idPlaylist, titre, dateCreation, idUtilisateur) VALUES
 ('P5', 'Drive', '2024-11-02', 'U4'),
 -- Thibault
 ('P6', 'Coup de Coeur', '2024-11-10', 'U5'),
-('P7', 'Nom Playlist', '2024-11-10', 'U5'),
+('P7', 'EH', '2024-11-10', 'U5'),
 -- Nathan
 ('P8', 'Coup de Coeur', '2024-11-10', 'U6'),
-('P9', 'Nom Playlist', '2024-11-10', 'U6');
+('P9', "N'importe quoi", '2024-11-10', 'U6');
 
 
 -- Insertion des musiques dans la table Musique
@@ -77,10 +77,26 @@ INSERT INTO Musique (idMusique, titre, artiste, lien) VALUES
 ('M28', 'Controlla - Lieless Remix', 'Yarimov, Lieless', 'https://youtu.be/Jrterm8Yx9s?si=-HeKrVoIotKG8Wkr'),
 ('M29', 'BANGARANG', 'KILLEDDY', 'https://youtu.be/KK5wKJEs5x0?si=kTwKxgoNigxPoV5m'),
 ('M30', 'FIGHT!', 'xxephyrr, TWISTED', 'https://youtu.be/LUWmJ_6QsWs?si=s7KijgGO56w-dKdq'),
+--Playlist Coup de Coeur de Thibault
+('M31', 'Les sardines', 'Patrick Sébastien', 'https://www.youtube.com/watch?v=PA3P1-aSvKQ'),
+('M32', 'Under the bridge', 'Red Hot Chili Peppers', 'https://www.youtube.com/watch?v=GLvohMXgcBo'),
+('M33', 'Comfortably Nump', 'Pink Floyd', 'https://open.spotify.com/intl-fr/track/7Fg4jpwpkdkGCvq1rrXnvx?si=f53928b1de914107'),
+-- Playlist EH de Thibault
+('M34', 'Lokaleko Leihotik', 'Sully Riot', 'https://www.youtube.com/watch?v=bEZOO1a4luI'),
+('M35', 'Haizea', 'Ken Zazpi', 'https://www.youtube.com/watch?v=DmNrapVHNRY'),
+('M36', 'Hotzikara', 'Ken Zazpi', 'https://www.youtube.com/watch?v=OQsN1dWYSjY'),
+-- Playlist Coup de Coeur de Nathan
+('M37', 'Le portrait', 'Calogero', 'https://www.youtube.com/watch?v=eyEDej0aGh8'),
+('M38', 'Life is a hightway', 'Cars', 'https://www.youtube.com/watch?v=5tXh_MfrMe0'),
+('M39', 'Life could be a dream', 'Cars', 'https://www.youtube.com/watch?v=n-miJQUD9l4'),
+-- Playlist N'importeQuoi de Nathan
+('M40', 'We are', 'One Piece', 'https://www.youtube.com/watch?v=oK0ULo01cYs'),
+('M41', 'Les yeux de la mama', 'Kendji Girac', 'https://www.youtube.com/watch?v=YgP2whwA2Wg'),
+('M42', 'Top 1', 'Squeezie', 'https://www.youtube.com/watch?v=uGSu6mhk3RQ'),
 -- Musiques par défaut
-('M31', 'Titre1', 'Artiste1', 'https://example.com/titre1'),
-('M32', 'Titre2', 'Artiste2', 'https://example.com/titre2'),
-('M33', 'Titre3', 'Artiste3', 'https://example.com/titre3');
+('M43', 'Titre1', 'Artiste1', 'https://example.com/titre1'),
+('M44', 'Titre2', 'Artiste2', 'https://example.com/titre2'),
+('M45', 'Titre3', 'Artiste3', 'https://example.com/titre3');
 
 
 
@@ -111,10 +127,10 @@ INSERT INTO Contenir (idPlaylist, idMusique) VALUES
 ('P7', 'M32'),
 ('P7', 'M33'),
 -- Musiques pour la playlist "Coup de Coeur" de Nathan
-('P8', 'M31'),
-('P8', 'M32'),
-('P8', 'M33'),
+('P8', 'M37'),
+('P8', 'M38'),
+('P8', 'M39'),
 -- Musiques pour la playlist "Nom Playlist" de Nathan
-('P9', 'M31'),
-('P9', 'M32'),
-('P9', 'M33');
+('P9', 'M40'),
+('P9', 'M41'),
+('P9', 'M42'),
