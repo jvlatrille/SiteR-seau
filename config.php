@@ -1,8 +1,8 @@
 <?php
-$hote = 'localhost'; // A remplacer par l'ip du serveurBD
-$nom_bdd = 'bdreseau'; // jsp
-$utilisateur = 'root';
-$mot_de_passe = ''; // toor
+$hote = '192.168.1.3'; // A remplacer par l'ip du serveurBD
+$nom_bdd = 'ma_bd'; // jsp
+$utilisateur = 'NatJuThi';
+$mot_de_passe = 'Helium64'; // toor
 
 try {
     $bdd = new PDO("mysql:host=$hote;dbname=$nom_bdd;charset=utf8", $utilisateur, $mot_de_passe);
